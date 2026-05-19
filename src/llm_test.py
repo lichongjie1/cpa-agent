@@ -7,11 +7,15 @@ CPA 题库 Agent — DeepSeek API 首次调用
 import json       # 处理 JSON 数据
 import os         # 操作文件路径、读环境变量
 import re         # [后面再懂] 正则表达式，匹配文本模式
-from dotenv import load_dotenv   # 从 .env 文件加载配置
-from openai import OpenAI        # OpenAI 兼容 SDK（DeepSeek 也用这个）
+from pathlib import Path          # [后面再懂] 处理文件路径，比 os.path 更好用
+from dotenv import load_dotenv    # 从 .env 文件加载配置
+from openai import OpenAI         # OpenAI 兼容 SDK（DeepSeek 也用这个）
 
 # ✅ [现在懂] .env → 环境变量 → os.getenv() 取出来，API Key 不硬编码
-load_dotenv()
+#    Path(__file__).resolve().parent.parent =
+#      当前文件(llm_test.py) → src/ → cpa-agent/(项目根) → cpa-agent/.env
+env_path = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(env_path)
 
 # ✅ [现在懂] 创建一个 API 客户端，像打开一扇门，后面通过它发请求
 #    api_key  = 你的身份凭证
