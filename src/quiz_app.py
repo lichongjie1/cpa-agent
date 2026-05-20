@@ -53,6 +53,15 @@ def generate_by_llm(count: int) -> list:
 # Section 2：答题引擎（Day 2 循环+判断，Day 3.2 模块化）
 # ============================================================
 
+def validate_choice(prompt: str, valid_options: list) -> str:
+    """反复提示直到用户输入有效选项，不区分大小写（Day 5.2 字符串方法）"""
+    while True:
+        raw = input(prompt).strip().upper()
+        if raw in [opt.upper() for opt in valid_options]:
+            return raw
+        print(f"⚠️ 请输入 {'/'.join(valid_options)}")
+
+
 def check_answer(question: dict, user_input: str) -> bool:
     """判断答对没有"""
     return user_input.strip().upper() == question["answer"]
@@ -61,7 +70,7 @@ def check_answer(question: dict, user_input: str) -> bool:
 def run_quiz(questions: list) -> tuple:
     """逐题答题，返回 (得分, 作答记录)"""
     score = 0
-    records = []  # 存每条作答记录
+    records = []
 
     for i, q in enumerate(questions, 1):
         print(f"\n{'=' * 50}")
@@ -69,10 +78,9 @@ def run_quiz(questions: list) -> tuple:
         for opt in q["options"]:
             print(f"    {opt}")
 
-        # 获取用户输入
-        user_input = input("你的答案（A/B/C/D）：").strip()
-        while user_input.upper() not in ("A", "B", "C", "D"):
-            user_input = input("请输入 A/B/C/D：").strip()
+        # Day 5.2：validate_choice 替代原始 while 循环
+        valid = [opt[0] for opt in q["options"]]  # 从选项里提取字母 A/B/C/D
+        user_input = validate_choice(f"你的答案（{'/'.join(valid)}）：", valid)
 
         if check_answer(q, user_input):
             print("    ✅ 正确！")
@@ -86,7 +94,7 @@ def run_quiz(questions: list) -> tuple:
             "question": q["title"],
             "your_answer": user_input.upper(),
             "correct_answer": q["answer"],
-            "correct": user_input.upper() == q["answer"],
+            "correct": check_answer(q, user_input),
         })
 
     return score, records
