@@ -12,6 +12,7 @@ venv/
 # 数据文件
 data/*.db
 data/*.sqlite3
+src/quiz_log.txt
 
 # IDE
 .vscode/
